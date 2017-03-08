@@ -1,4 +1,5 @@
 library(shiny)
+library(leaflet)
 
 shinyUI(fluidPage(
     titlePanel('College Finder'),
@@ -9,6 +10,7 @@ shinyUI(fluidPage(
             h2('Sidebar')
             ), 
         mainPanel(
+
             
             tabpanel(type = "tabs", 
                      tabpanel('map', h2('Map'), leafletOutput('map')),

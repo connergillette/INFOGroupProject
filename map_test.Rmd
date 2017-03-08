@@ -1,0 +1,22 @@
+```{r, echo = FALSE}
+library(sp)
+library(leaflet)
+library(htmltools)
+
+df <- as.data.frame(read.csv('college_dataset.csv', stringsAsFactors = FALSE))
+df <- head(df, 100)
+#df <- na.exclude(df)
+df$latitude <- as.numeric(df$latitude[!is.na(df$latitude)])
+df$longitude <- as.numeric(df$longitude[!is.na(df$longitude)])
+#df$latitude <- as.numeric(df$latitude)
+#df$longitude <- as.numeric(df$longitude)
+
+#coordinates(df) <- ~longitude+latitude
+
+#View(df)
+url <- 'https://api.mapbox.com/styles/v1/connergillette/cizyy5a9m004m2smjhu438php/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY29ubmVyZ2lsbGV0dGUiLCJhIjoiY2l6cWIwOWJuMDE3azMzcDdvdmx3eWMwMyJ9.Qa235PPv1uPZtvaWIUSpQA'
+
+#attribution.string <- "© <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> Basemap © <a href='http://www.tcu.edu'>Texas Christian University</a>"
+
+leaflet(df) %>% addCircleMarkers(popup = ~htmlEscape(paste0(INSTNM, ', ', CITY)), stroke = FALSE, fillOpacity = 1, radius = 5) %>% addTiles(urlTemplate = url)
+```
