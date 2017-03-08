@@ -10,6 +10,7 @@ shinyUI(fluidPage(
             h2('Sidebar')
             ), 
         mainPanel(
+            #@Thejas - None of this worked for me
             #tabPanel(type = "tabs", 
                     # tabPanel('map', h2('Map'), leafletOutput('map')),
                      # tabPanel('list', fluidRow(h2('List of Your Colleges'), 
