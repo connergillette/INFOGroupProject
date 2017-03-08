@@ -27,3 +27,6 @@ shinyServer(function(input, output) {
         })
     })
 
+
+    output$list <- renderPrint({})
+
