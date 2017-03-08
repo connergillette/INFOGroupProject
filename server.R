@@ -24,3 +24,5 @@ shinyServer(function(input, output) {
             setView(lng = -93.85, lat = 37.45, zoom = 4)
         })
     })
+
+    output$list <- renderPrint({})
