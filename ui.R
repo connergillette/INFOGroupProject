@@ -43,8 +43,13 @@ shinyUI(fluidPage(
                   min=0,max=800,value=c(400,700)),
       sliderInput("size",label=h3("Undergraduate Population Size"),
                   min=0,max=100000,value=c(30000,50000)),
-      sliderInput("tuition",label=h3("Tuition"),
-                  min=0,max=30000,value=10000)
+      radioButtons("type_tuition",label=h3("Type of Tuition"),
+                   choices=list("Both" = 1, "In-State"=2, "Out-of-State"=3),
+                   selected=1),
+      sliderInput("in_tuition",label=h3("Tuition In-State"),
+                  min=0,max=40000,value=c(5000,20000)),
+      sliderInput("out_tuition",label=h3("Tuition Out-of-State"),
+                  min=0,max=40000,value=c(5000,20000))
     ), 
     mainPanel(
       tabsetPanel(type = "tabs", 

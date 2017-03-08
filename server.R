@@ -29,6 +29,10 @@ shinyServer(function(input, output) {
   #View(df)
   filtered.data <- reactive({
     full.data.set <- read.csv('filtered_college_data.csv',stringsAsFactors = FALSE)
+    full.data.set$TUITIONFEE_IN <- as.numeric(full.data.set$TUITIONFEE_IN)
+    full.data.set$TUITIONFEE_OUT <- as.numeric(full.data.set$TUITIONFEE_OUT)
+    full.data.set$ADM_RATE <- as.numeric(full.data.set$ADM_RATE)
+    full.data.set$UGDS <- as.numeric(full.data.set$UGDS)
     # Filters for States, if it is the united states it doesn't filter anything.
     if(input$state != "United States"){
       if(input$state %in% state.name){
@@ -37,11 +41,25 @@ shinyServer(function(input, output) {
         full.data.set <- filter(full.data.set, STABBR == commonwealth.territories[input$state])
       }
     }
-    min.range <- input$admission[1]/100
-    max.range <- input$admission[2]/100
     # Filter for Admission Rate
-    full.data.set <- filter(full.data.set, ADM_RATE >= min.range & ADM_RATE <= max.range)
+    min.range.adm <- input$admission[1]/100
+    max.range.adm <- input$admission[2]/100
+    full.data.set <- filter(full.data.set, ADM_RATE >= min.range.adm & ADM_RATE <= max.range.adm)
     # Filter for Majors
+    
+    # Filter for SAT Scores
+    
+    # Filter for Undergrad Pop Size
+    min.range.size <- input$size[1]
+    max.range.size <- input$size[2]
+    full.data.set <- filter(full.data.set, UGDS >= min.range.size & UGDS <= max.range.size)
+    
+    # Filter for Tuition
+    if(input$type_tuition == 2){
+      full.data.set <- filter(full.data.set, TUITIONFEE_IN >= input$in_tuition[1] & TUITIONFEE_IN <= input$in_tuition[2])
+    }else if(input$type_tuition == 3){
+      full.data.set <- filter(full.data.set, TUITIONFEE_OUT >= input$out_tuition[1] & TUITIONFEE_OUT <= input$out_tuition[2])
+    }
     
     return(as.data.frame(full.data.set))
   })
