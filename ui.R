@@ -2,6 +2,7 @@ library(shiny)
 library(leaflet)
 library(dplyr)
 
+
 data.set <- read.csv('MERGED2014_15_PP.csv', stringsAsFactors=FALSE)
 state.abbr.list <- as.vector(unique(select(data.set,STABBR))[,1])
 state.name.list <- c()
@@ -23,6 +24,7 @@ for(abbr in state.abbr.list){
   state.name.list <- append(state.name.list,names)
 }
 state.name.list <- unlist(state.name.list, use.names=FALSE)
+state.name.list <- c("United States", state.name.list)
 major.list <- c("Computer Science", "Informatics")
 
 shinyUI(fluidPage(
