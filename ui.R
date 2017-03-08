@@ -2,7 +2,15 @@ library(shiny)
 library(leaflet)
 library(dplyr)
 
+# Reads data from a csv file
 data.set <- read.csv('MERGED2014_15_PP.csv', stringsAsFactors=FALSE)
+
+# Selects the usable coloumns for data manipulation
+#data.set <- select(data.set.all, LATITUDE, LONGITUDE, STABBR, CITY, INSTNM, ADM_RATE,
+#                   SAT_AVG_ALL, UGDS, TUITIONFEE_IN, TUITIONFEE_OUT, PCIP04, PCIP09, PCIP11,
+#                   PCIP13, PCIP14, PCIP15, PCIP16, PCIP22, PCIP23, PCIP24, PCIP26, PCIP27,
+#                   PCIP38, PCIP40, PCIP41, PCIP42, PCIP44, PCIP45, PCIP46, PCIP51, PCIP52, PCIP54)
+
 state.abbr.list <- as.vector(unique(select(data.set,STABBR))[,1])
 state.name.list <- c()
 commonwealth.territories <- list("AS" = "American Samoa",
@@ -13,7 +21,8 @@ commonwealth.territories <- list("AS" = "American Samoa",
                                  "MP" = "Northern Mariana Islands",
                                  "PW" = "Palau",
                                  "PR" = "Puerto Rico",
-                                 "VI" = "Virgin Islands")
+                                "VI" = "Virgin Islands")
+max.pop <- select(df, UGDS) %>% filter(UGDS != "NULL") %>% summarise("max" = max(UGDS))
 for(abbr in state.abbr.list){
   if(abbr %in% names(commonwealth.territories)){
     names <- commonwealth.territories[abbr]
@@ -23,7 +32,8 @@ for(abbr in state.abbr.list){
   state.name.list <- append(state.name.list,names)
 }
 state.name.list <- unlist(state.name.list, use.names=FALSE)
-major.list <- c("Computer Science", "Informatics")
+major.list <- c("Computer Science", "Informatics" )
+
 
 shinyUI(fluidPage(
   titlePanel('College Finder'),
@@ -37,10 +47,14 @@ shinyUI(fluidPage(
                   min=0,max=100,value=c(40,60)),
       selectInput("major", label=h3("Major"),
                   choices=list('Major'=major.list)),
-      sliderInput("sat",label=h3("SAT Scores"),
+      sliderInput("sat.math",label=h3("SAT Math Score"),
+                  min=0,max=800,value=c(400,700)),
+      sliderInput("sat.reading",label=h3("SAT Reading Scores"),
+                  min=0,max=800,value=c(400,700)),
+      sliderInput("sat.writing",label=h3("SAT Writing Scores"),
                   min=0,max=800,value=c(400,700)),
       sliderInput("size",label=h3("Undergraduate Population Size"),
-                  min=0,max=100000,value=c(30000,50000)),
+                  min=0,max= as.numeric(max.pop$max),value=c(30000,50000)),
       sliderInput("tuition",label=h3("Tuition"),
                   min=0,max=30000,value=10000)
     ), 
