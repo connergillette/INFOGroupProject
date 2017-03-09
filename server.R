@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(htmlTable)
 
 # For map visualization
 library(sp)
@@ -124,8 +125,26 @@ shinyServer(function(input, output) {
                    "Cost IN-STATE" = TUITIONFEE_IN , "Cost OUT-OF-STATE" = TUITIONFEE_OUT , "URL" = INSTURL )
     return(data)
   })
+  
+  observe({
+    click <- input$map_marker_click
+    if(!is.null(click$lat) & !is.null(click$lng) ){
+      df <- filtered.data()
+      college.row <- filter(df,LATITUDE == click['lat'], LONGITUDE == click['lng'])
+      output$clickinfo <- renderUI({
+        HTML(paste(
+               paste0("<strong>University & Location:</strong> ", college.row$INSTNM," (",college.row$CITY,", ",college.row$STABBR,")"),
+               paste0("<strong>Undergrad Population:</strong> ",college.row$UGDS),
+               paste0("<strong>SAT Writing Score (Median):</strong> ",college.row$SATWRMID),
+               paste0("<strong>SAT Reading Score (Median):</strong> ",college.row$SATVRMID),
+               paste0("<strong>SAT Math Score (Median):</strong> ",college.row$SATMTMID),
+               paste0("<strong>In-State Tuition:</strong> ",college.row$TUITIONFEE_IN),
+               paste0("<strong>Out-of-State Tuition:</strong> ",college.row$TUITIONFEE_OUT),
+               paste0("<strong>University URL:</strong> ",college.row$INSTURL),
+               sep='<br/>'))
+      })
+    }
+  })
+  
 })
-
-
-
 

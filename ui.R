@@ -119,7 +119,8 @@ shinyUI(navbarPage("College Data Information",
                     tabPanel('map', h2('Map'), 
                              p("The following is information based on a set of colleges in the USA. To explore
                                more on specific colleges, access the Data Table tab."),
-                             leafletOutput('map')),
+                             leafletOutput('map'),
+                             htmlOutput('clickinfo')),
                     tabPanel('list',  h2('List of Your Colleges'), 
                              p("The following is a customized list for your set of colleges that you
                                might have in mind."),
