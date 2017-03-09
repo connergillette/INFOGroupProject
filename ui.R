@@ -27,7 +27,7 @@ for(abbr in state.abbr.list){
 state.name.list <- unlist(state.name.list, use.names=FALSE)
 state.name.list <- c("United States", state.name.list)
 
-shinyUI(navbarPage("Test",
+shinyUI(navbarPage("College Data Information",
  tabPanel("Home Page",
     titlePanel('College Finder Tool for Undergraduates'),
     p('This tool is designed to help potential and current undergraduate students find out helpful
@@ -117,29 +117,80 @@ shinyUI(navbarPage("Test",
                                "Selects colleges with a tuition within the selected range."
                                )),
                     tabPanel('map', h2('Map'), 
-                             p("A Map with the selected colleges in the United States"),
+                             p("The following is information based on a set of colleges in the USA. To explore
+                               more on specific colleges, access the Data Table tab."),
                              leafletOutput('map')),
-                    tabPanel('list',h2('List of Your Colleges'),
-                             p("Displays summary statistic of colleges you search for."),
+                    tabPanel('list',  h2('List of Your Colleges'), 
+                             p("The following is a customized list for your set of colleges that you
+                               might have in mind."),
                              fluidRow(
-                               selectInput('colleges', label = "Your Colleges:", 
-                                           choices = c("No colleges"=""), 
-                                           multiple=TRUE)
+                               selectInput('colleges1', label = "College 1:", 
+                                           choices = c(data.set$INSTNM)), 
+                               selectInput('colleges2', label = "College 2:", 
+                                           choices = c(data.set$INSTNM)), 
+                               selectInput('colleges3', label = "College 3:", 
+                                           choices = c(data.set$INSTNM)),
+                               selectInput('colleges4', label = "College 4:", 
+                                           choices = c(data.set$INSTNM)), 
+                               selectInput('colleges5', label = "College 5:", 
+                                           choices = c(data.set$INSTNM))
                              ),
-                             fluidRow(dataTableOutput("table")),
-                             fluidRow(h2('Summary statistics'), 
-                                      verbatimTextOutput("summary"))
+                             fluidRow(dataTableOutput("table"))
                     ),
                     tabPanel('Data Table', 
                              h2('Data Table for Currently Filtered Data'),
-                             p("The table of data used for the map."),
-                              tableOutput('full_df'))
+                             p("The following is a fully comprehesive table to represent the
+                               set of colleges being considered in the map."),
+                              dataTableOutput('full_df'))
         )
       )
     )
   ),
  tabPanel("Information",
     titlePanel("Information about College Finding Application"),
-    p("Targeted group of audience, purpose, etc.")
+    p("Education is a cornerstone to the modern society. One of
+the steps involved in the process of education is college. Nowadays,
+a degree in a college is almost a necessity for many jobs. To succeed 
+in future career, students need to pick the right college that matches 
+their preferences to spend about 4 years of their life in. Hence, it is
+important to look at the nationally accumulated data on Colleges to 
+ultimately help students pick their preferred colleges. We will be 
+observing the data on such colleges and present it in a helpful way 
+for the users to understand. The source that we will be using comes 
+from the source Data.gov, the link to which has been provided below.
+The data is collected, managed and hosted by the U.S. General Services
+Administration, Technology Transformation Service. We aim to make use
+of specific subsets of the data sets such as most recent cohorts 
+scorecard, and college scorecard raw data. These data sets will help 
+us relate the different requirements of different schools throughout 
+the nation and also provide us with information like top 75 percentile
+admit SAT score, acceptance rate, city of the respective university, 
+amount of earnings by graduates etc. Along with data sets we will also
+be using a data dictionary, the link to that is also provided below.
+"),
+
+      p("The major audience that we hope to aim are the graduating high
+school seniors who will be looking at different colleges to apply to. 
+There dire need to compare the 75/25 percentile of each college to
+their own scores, tuition fee of each university and suitable city will
+be fulfilled by this data representation. For example, John Wick, an 
+average american high school senior who has bagged a decent score in 
+SAT, limited financial standing and now wants to apply in different 
+colleges. Since he cannot apply to all of the colleges (due to high 
+application fee), John has to finalize few colleges where he thinks 
+he can get in and where his other requirements are met. He turns to 
+the information provided by us and he can easily list down universities
+according to his needs. Another audience that we can target will be 
+the high school counselors who need to keep a track of each university,
+their requirements, tuition fee etc., so that they can be helpful 
+towards their students seeking guidance. For example, Josh Spencer, 
+a counselor at a public school, would need to consider the academic,
+financial and vocational situations of each of the student to suggest
+appropriate schools. Our presentation can assist people like Josh to
+consider preferable options for their students based on our easily 
+understandable data and their experience.
+"),
+    p("Reference: https://collegescorecard.ed.gov/data/documentation/ 
+      By U.S. Department of Education")
     )
 ))

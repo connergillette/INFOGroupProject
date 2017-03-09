@@ -101,10 +101,31 @@ shinyServer(function(input, output) {
       setView(lng = -104.82, lat = 47.55, zoom = 3)
   })
   
-  output$list <- renderPrint({})
+  list <- reactive({
+    my.list <- filter(df, INSTNM == input$colleges1 | INSTNM == input$colleges2 |
+                        INSTNM == input$colleges3 | INSTNM == input$colleges4 |
+                        INSTNM == input$colleges5)
+    return(my.list)
+  })
   
-  output$full_df <- renderTable({
-    return(filtered.data())
+  output$table <- renderDataTable({
+    data <- list()
+    data <- select(data, INSTNM, STABBR, CITY, ZIP, ADM_RATE, SATVRMID, SATMTMID, SATWRMID, 
+                   UGDS, TUITIONFEE_IN, TUITIONFEE_OUT, INSTURL)
+    data <- rename(data, "Name" = INSTNM , "State" = STABBR , "City" = CITY , "Total Undergrads" = UGDS ,
+                   "SAT Median Writing" = SATWRMID, "SAT Median Verbal" = SATVRMID, "SAT Median Math" = SATMTMID,
+                   "Cost IN-STATE" = TUITIONFEE_IN , "Cost OUT-OF-STATE" = TUITIONFEE_OUT , "URL" = INSTURL )
+    return(data)
+  })
+  
+  output$full_df <- renderDataTable({
+    data <- filtered.data()
+    data <- select(data, INSTNM, STABBR, CITY, ZIP, ADM_RATE, SATVRMID, SATMTMID, SATWRMID, 
+                   UGDS, TUITIONFEE_IN, TUITIONFEE_OUT, INSTURL)
+    data <- rename(data, "Name" = INSTNM , "State" = STABBR , "City" = CITY , "Total Undergrads" = UGDS ,
+                   "SAT Median Writing" = SATWRMID, "SAT Median Verbal" = SATVRMID, "SAT Median Math" = SATMTMID,
+                   "Cost IN-STATE" = TUITIONFEE_IN , "Cost OUT-OF-STATE" = TUITIONFEE_OUT , "URL" = INSTURL )
+    return(data)
   })
 })
 
