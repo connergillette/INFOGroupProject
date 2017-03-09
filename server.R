@@ -93,7 +93,7 @@ shinyServer(function(input, output) {
                                                                                                                                     paste0('<b>Admission Rate: </b>', as.numeric(df$ADM_RATE) * 100, '%'), '<b>Admission Rate:</b> Not given'))
     
     leaflet(df) %>% 
-      addCircleMarkers(popup = ~htmlEscape(paste0(INSTNM, ', ', CITY)), stroke = FALSE, fillOpacity = 1, radius = 4) %>% 
+      addCircleMarkers(popup = popup.content, stroke = FALSE, fillOpacity = 1, radius = 4) %>% 
       addTiles(urlTemplate = url, attribution = 'Maps provided by <a href="http://www.mapbox.com/">Mapbox</a>') %>% 
       setView(lng = -104.82, lat = 47.55, zoom = 3)
   })

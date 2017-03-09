@@ -1,6 +1,6 @@
 library(shiny)
 library(leaflet)
-
+library(dplyr)
 
 data.set <- read.csv('MERGED2014_15_PP.csv', stringsAsFactors=FALSE)
 state.abbr.list <- as.vector(unique(select(data.set,STABBR))[,1])
