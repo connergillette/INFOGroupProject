@@ -4,6 +4,7 @@ library(leaflet)
 library(dplyr)
 library(shinythemes)
 
+
 # Reads the csv files
 data.set <- read.csv('filtered_college_data.csv', stringsAsFactors=FALSE)
 
