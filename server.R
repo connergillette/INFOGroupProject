@@ -1,3 +1,4 @@
+# Loads the required library
 library(shiny)
 library(dplyr)
 library(tidyr)

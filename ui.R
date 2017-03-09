@@ -1,17 +1,35 @@
+# Loads the required library
 library(shiny)
 library(leaflet)
 library(dplyr)
 library(shinythemes)
 
+# Reads the csv files
 data.set <- read.csv('filtered_college_data.csv', stringsAsFactors=FALSE)
+
+# Changes the string data in the data frame to numeric form
 data.set$TUITIONFEE_IN <- as.numeric(data.set$TUITIONFEE_IN)
+
+# Changes the string data in the data frame to numeric form
 data.set$TUITIONFEE_OUT <- as.numeric(data.set$TUITIONFEE_OUT)
+
+# Changes the string data in the data frame to numeric form
 data.set$ADM_RATE <- as.numeric(data.set$ADM_RATE)
+
+# Changes the string data in the data frame to numeric form
 data.set$UGDS <- as.numeric(data.set$UGDS)
+
+# Changes the string data in the data frame to numeric form
 data.set$DEBT_MDN <- as.numeric(data.set$DEBT_MDN)
+
+# Changes the string data in the data frame to numeric form
 data.set$INEXPFTE <- as.numeric(data.set$INEXPFTE)
+
+# Creates a list of all the states in the country
 state.abbr.list <- as.vector(unique(select(data.set,STABBR))[,1])
 state.name.list <- c()
+
+# Inclusion of common wealth territories to the state's list
 commonwealth.territories <- list("AS" = "American Samoa",
                                  "DC" = "District of Columbia",
                                  "FM" = "Federated States of Micronesia",
@@ -21,7 +39,11 @@ commonwealth.territories <- list("AS" = "American Samoa",
                                  "PW" = "Palau",
                                  "PR" = "Puerto Rico",
                                  "VI" = "Virgin Islands")
+
+# Stores the max of population size in a university
 max.pop <- select(data.set,UGDS) %>% summarise(max = max(UGDS))
+
+# Runs a loop to access each state.
 for(abbr in state.abbr.list){
   if(abbr %in% names(commonwealth.territories)){
     names <- commonwealth.territories[abbr]
@@ -30,12 +52,18 @@ for(abbr in state.abbr.list){
   }
   state.name.list <- append(state.name.list,names)
 }
+
+# Unlists the state's list to manipuate data.
 state.name.list <- unlist(state.name.list, use.names=FALSE)
+
+# Changes column name to "United States"
 state.name.list <- c("United States", state.name.list)
 
+# Creates the shiny app interface for the users
 shinyUI(
     fluidPage(theme = shinytheme('united'),
-        
+
+# Creates the navigation bar and side bar.                      
 navbarPage("College Data Information",
  tabPanel("Home Page",
     titlePanel('College Finder Tool for Undergraduates'),
@@ -149,6 +177,8 @@ navbarPage("College Data Information",
       )
     )
   ),
+ 
+ # Tag panel for different kinds of data visuals.
  tabPanel("Information",
     titlePanel("Information about College Finding Application"),
         h3('Thesis'),
