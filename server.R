@@ -33,6 +33,8 @@ shinyServer(function(input, output) {
     full.data.set$SATMTMID <- as.numeric(full.data.set$SATMTMID)
     full.data.set$SATVRMID <- as.numeric(full.data.set$SATVRMID)
     full.data.set$SATWRMID <- as.numeric(full.data.set$SATWRMID)
+    full.data.set$DEBT_MDN <- as.numeric(full.data.set$DEBT_MDN)
+    full.data.set$INEXPFTE <- as.numeric(full.data.set$INEXPFTE)
     
     # Filters for States, if it is the united states it doesn't filter anything.
     if(input$state != "United States"){
@@ -50,7 +52,7 @@ shinyServer(function(input, output) {
     if(input$major != "None"){
       full.data.set <- select_(full.data.set, "INSTNM", "CITY", "STABBR","ZIP","LATITUDE", 
                               "LONGITUDE","INSTURL","ADM_RATE", "SATVRMID", "SATMTMID","SATWRMID",
-                              input$major, "UGDS", "TUITIONFEE_IN", "TUITIONFEE_OUT") %>% 
+                              input$major, "UGDS", "TUITIONFEE_IN", "TUITIONFEE_OUT", "DEBT_MDN", "INEXPFTE") %>% 
                        filter_(.dots=paste0(input$major,"!= ","0"))
     }
 
@@ -81,6 +83,15 @@ shinyServer(function(input, output) {
       full.data.set <- filter(full.data.set, TUITIONFEE_OUT >= input$out_tuition[1] & TUITIONFEE_OUT <= input$out_tuition[2])
     }
     
+    # Filter for Loans
+    min.range.loan <- input$loan[1]
+    max.range.loan <- input$loan[2]
+    full.data.set <- filter(full.data.set, DEBT_MDN >= min.range.loan & DEBT_MDN <= max.range.loan)
+    
+    min.range.expenditure <- input$expenditure[1]
+    max.range.expenditure <- input$expenditure[2]
+    full.data.set <- filter(full.data.set, INEXPFTE >= min.range.expenditure & INEXPFTE <= max.range.expenditure)
+    
     return(as.data.frame(full.data.set))
   })
   
@@ -107,20 +118,22 @@ shinyServer(function(input, output) {
   output$table <- renderDataTable({
     data <- list()
     data <- select(data, INSTNM, STABBR, CITY, ZIP, ADM_RATE, SATVRMID, SATMTMID, SATWRMID, 
-                   UGDS, TUITIONFEE_IN, TUITIONFEE_OUT, INSTURL)
+                   UGDS, TUITIONFEE_IN, TUITIONFEE_OUT, DEBT_MDN, INEXPFTE, INSTURL)
     data <- rename(data, "Name" = INSTNM , "State" = STABBR , "City" = CITY , "Total Undergrads" = UGDS ,
                    "SAT Median Writing" = SATWRMID, "SAT Median Verbal" = SATVRMID, "SAT Median Math" = SATMTMID,
-                   "Cost IN-STATE" = TUITIONFEE_IN , "Cost OUT-OF-STATE" = TUITIONFEE_OUT , "URL" = INSTURL )
+                   "Cost IN-STATE" = TUITIONFEE_IN , "Cost OUT-OF-STATE" = TUITIONFEE_OUT , 
+                   "Loan Amount" = DEBT_MDN, "Expenditure per Student" = INEXPFTE, "URL" = INSTURL)
     return(data)
   })
   
   output$full_df <- renderDataTable({
     data <- filtered.data()
     data <- select(data, INSTNM, STABBR, CITY, ZIP, ADM_RATE, SATVRMID, SATMTMID, SATWRMID, 
-                   UGDS, TUITIONFEE_IN, TUITIONFEE_OUT, INSTURL)
+                   UGDS, TUITIONFEE_IN, TUITIONFEE_OUT, DEBT_MDN, INEXPFTE, INSTURL)
     data <- rename(data, "Name" = INSTNM , "State" = STABBR , "City" = CITY , "Total Undergrads" = UGDS ,
                    "SAT Median Writing" = SATWRMID, "SAT Median Verbal" = SATVRMID, "SAT Median Math" = SATMTMID,
-                   "Cost IN-STATE" = TUITIONFEE_IN , "Cost OUT-OF-STATE" = TUITIONFEE_OUT , "URL" = INSTURL )
+                   "Cost IN-STATE" = TUITIONFEE_IN , "Cost OUT-OF-STATE" = TUITIONFEE_OUT , 
+                   "Loan Amount" = DEBT_MDN, "Expenditure per Student" = INEXPFTE, "URL" = INSTURL)
     return(data)
   })
   
@@ -128,7 +141,21 @@ shinyServer(function(input, output) {
     click <- input$map_marker_click
     if(!is.null(click$lat) & !is.null(click$lng) ){
       df <- filtered.data()
+      df$DEBT_MDN <- as.numeric(df$DEBT_MDN)
+      df$INEXPFTE <- as.numeric(df$INEXPFTE)
+      average.debt <- mean(df$DEBT_MDN, na.rm=TRUE)
+      average.expenditure <- mean(df$INEXPFTE, na.rm=TRUE)
       college.row <- filter(df,LATITUDE == click['lat'], LONGITUDE == click['lng'])
+      if(college.row$DEBT_MDN > average.debt){
+        debt.statistic <- "<strong>greater</strong>"
+      }else{
+        debt.statistic <- "<strong>less than or equal to</strong>"
+      }
+      if(college.row$INEXPFTE > average.expenditure){
+        expenditure.statistic <- "<strong>greater</strong>"
+      }else{
+        expenditure.statistic <- "<strong>less than or equal to</strong>"
+      }
       output$clickinfo <- renderUI({
         HTML(paste(
                paste0("<strong>University & Location:</strong> ", college.row$INSTNM," (",college.row$CITY,", ",college.row$STABBR,")"),
@@ -138,7 +165,13 @@ shinyServer(function(input, output) {
                paste0("<strong>SAT Math Score (Median):</strong> ",college.row$SATMTMID),
                paste0("<strong>In-State Tuition:</strong> ",college.row$TUITIONFEE_IN),
                paste0("<strong>Out-of-State Tuition:</strong> ",college.row$TUITIONFEE_OUT),
+               paste0("<strong>Loan Amount:</strong> ",college.row$DEBT_MDN),
+               paste0("<strong>Expenditure per Student:</strong> ",college.row$INEXPFTE),
                paste0("<strong>University URL:</strong> ",college.row$INSTURL),
+               paste0("The average debt from this university is ",debt.statistic,
+                   " than the average debt from all Universities in the United States."),
+               paste0("The average expenditure per student from this university is ",expenditure.statistic,
+                      " than the average debt from all Universities in the United States."),
                sep='<br/>'))
       })
     }

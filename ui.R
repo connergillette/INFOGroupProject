@@ -8,9 +8,8 @@ data.set$TUITIONFEE_IN <- as.numeric(data.set$TUITIONFEE_IN)
 data.set$TUITIONFEE_OUT <- as.numeric(data.set$TUITIONFEE_OUT)
 data.set$ADM_RATE <- as.numeric(data.set$ADM_RATE)
 data.set$UGDS <- as.numeric(data.set$UGDS)
-data.set$SATMTMID <- as.numeric(data.set$SATMTMID)
-data.set$SATVRMID <- as.numeric(data.set$SATVRMID)
-data.set$SATWRMID <- as.numeric(data.set$SATWRMID)
+data.set$DEBT_MDN <- as.numeric(data.set$DEBT_MDN)
+data.set$INEXPFTE <- as.numeric(data.set$INEXPFTE)
 state.abbr.list <- as.vector(unique(select(data.set,STABBR))[,1])
 state.name.list <- c()
 commonwealth.territories <- list("AS" = "American Samoa",
@@ -104,7 +103,11 @@ navbarPage("College Data Information",
         sliderInput("in_tuition",label=h3("Tuition In-State"),
                     min=0,max=max(data.set$TUITIONFEE_IN, na.rm=TRUE),value=c(0,10000)),
         sliderInput("out_tuition",label=h3("Tuition Out-of-State"),
-                    min=0,max=max(data.set$TUITIONFEE_OUT,na.rm=TRUE),value=c(0,10000))
+                    min=0,max=max(data.set$TUITIONFEE_OUT,na.rm=TRUE),value=c(0,10000)),
+        sliderInput("loan", label=h3("Loan Amount"),
+                    min=0,max=max(data.set$DEBT_MDN,na.rm=TRUE),value=c(0,max(data.set$DEBT_MDN,na.rm=TRUE))),
+        sliderInput("expenditure",label=h3("University Expenditure per Student"),
+                    min=0,max=max(data.set$INEXPFTE,na.rm=TRUE),value=c(0,max(data.set$INEXPFTE,na.rm=TRUE)))
       ), 
       mainPanel(
         tabsetPanel(type = "tabs", 
