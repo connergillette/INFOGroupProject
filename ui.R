@@ -1,6 +1,7 @@
 library(shiny)
 library(leaflet)
 library(dplyr)
+library(shinythemes)
 
 data.set <- read.csv('MERGED2014_15_PP.csv', stringsAsFactors=FALSE)
 state.abbr.list <- as.vector(unique(select(data.set,STABBR))[,1])
@@ -26,7 +27,10 @@ for(abbr in state.abbr.list){
 state.name.list <- unlist(state.name.list, use.names=FALSE)
 state.name.list <- c("United States", state.name.list)
 
-shinyUI(navbarPage("College Data Information",
+shinyUI(
+    fluidPage(theme = shinytheme('united'),
+        
+navbarPage("College Data Information",
  tabPanel("Home Page",
     titlePanel('College Finder Tool for Undergraduates'),
     p('This tool is designed to help potential and current undergraduate students find out helpful
@@ -97,8 +101,22 @@ shinyUI(navbarPage("College Data Information",
       ), 
       mainPanel(
         tabsetPanel(type = "tabs", 
+                    tabPanel('Map', h2('Map'), 
+                             p("The following is information based on a set of colleges in the USA. To explore
+                               more on specific colleges, access the Data Table tab."),
+                             leafletOutput('map')),
+                    tabPanel('Compare',  h2('Compare Schools'), 
+                             p("Enter schools you are interested in to compare them on various criteria."),
+                            selectInput('colleges', 'Schools of Interest', choices = data.set$INSTNM, multiple = TRUE, width = "100%"),
+                             fluidRow(dataTableOutput("table"))
+                    ),
+                    tabPanel('Results', 
+                             h2('Showing schools matching your filters'),
+                             p("The following is a fully comprehesive table to represent the
+                               set of colleges being considered in the map."),
+                              dataTableOutput('full_df')),
                     tabPanel('Instructions', h2('Instructions'),
-                             p("Instructions on how to use the filter sidebar.",
+                             p("Instructions on how to use the filter sidebar:",
                                h3("State"),
                                "This filter changes what state's colleges are displayed.",
                                h3("Admission Rate"),
@@ -115,33 +133,7 @@ shinyUI(navbarPage("College Data Information",
                                at all.",
                                h3("Tuition In-State/Out-of-State"),
                                "Selects colleges with a tuition within the selected range."
-                               )),
-                    tabPanel('map', h2('Map'), 
-                             p("The following is information based on a set of colleges in the USA. To explore
-                               more on specific colleges, access the Data Table tab."),
-                             leafletOutput('map')),
-                    tabPanel('list',  h2('List of Your Colleges'), 
-                             p("The following is a customized list for your set of colleges that you
-                               might have in mind."),
-                             fluidRow(
-                               selectInput('colleges1', label = "College 1:", 
-                                           choices = c(data.set$INSTNM)), 
-                               selectInput('colleges2', label = "College 2:", 
-                                           choices = c(data.set$INSTNM)), 
-                               selectInput('colleges3', label = "College 3:", 
-                                           choices = c(data.set$INSTNM)),
-                               selectInput('colleges4', label = "College 4:", 
-                                           choices = c(data.set$INSTNM)), 
-                               selectInput('colleges5', label = "College 5:", 
-                                           choices = c(data.set$INSTNM))
-                             ),
-                             fluidRow(dataTableOutput("table"))
-                    ),
-                    tabPanel('Data Table', 
-                             h2('Data Table for Currently Filtered Data'),
-                             p("The following is a fully comprehesive table to represent the
-                               set of colleges being considered in the map."),
-                              dataTableOutput('full_df'))
+                             ))
         )
       )
     )
@@ -193,4 +185,4 @@ understandable data and their experience.
     p("Reference: https://collegescorecard.ed.gov/data/documentation/ 
       By U.S. Department of Education")
     )
-))
+)))

@@ -93,15 +93,13 @@ shinyServer(function(input, output) {
                                                                                                                                     paste0('<b>Admission Rate: </b>', as.numeric(df$ADM_RATE) * 100, '%'), '<b>Admission Rate:</b> Not given'))
     
     leaflet(df) %>% 
-      addCircleMarkers(popup = popup.content, stroke = FALSE, fillOpacity = 1, radius = 4) %>% 
+      addCircleMarkers(popup = popup.content, stroke = FALSE, fillOpacity = 1, radius = 4, color = '#ff4300') %>% 
       addTiles(urlTemplate = url, attribution = 'Maps provided by <a href="http://www.mapbox.com/">Mapbox</a>') %>% 
       setView(lng = -104.82, lat = 47.55, zoom = 3)
   })
   
   list <- reactive({
-    my.list <- filter(df, INSTNM == input$colleges1 | INSTNM == input$colleges2 |
-                        INSTNM == input$colleges3 | INSTNM == input$colleges4 |
-                        INSTNM == input$colleges5)
+    my.list <- filter(df, INSTNM %in% input$colleges)
     return(my.list)
   })
   
