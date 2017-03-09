@@ -23,8 +23,6 @@ commonwealth.territories <- list("American Samoa" = "AS",
 
 shinyServer(function(input, output) {
   
-  url <- 'https://api.mapbox.com/styles/v1/connergillette/cizyy5a9m004m2smjhu438php/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY29ubmVyZ2lsbGV0dGUiLCJhIjoiY2l6cWIwOWJuMDE3azMzcDdvdmx3eWMwMyJ9.Qa235PPv1uPZtvaWIUSpQA'
-
   filtered.data <- reactive({
     full.data.set <- read.csv('filtered_college_data.csv',stringsAsFactors = FALSE)
     full.data.set$TUITIONFEE_IN <- as.numeric(full.data.set$TUITIONFEE_IN)
