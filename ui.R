@@ -26,7 +26,6 @@ for(abbr in state.abbr.list){
 }
 state.name.list <- unlist(state.name.list, use.names=FALSE)
 state.name.list <- c("United States", state.name.list)
-major.list <- c("Computer Science", "Informatics")
 
 shinyUI(fluidPage(
   titlePanel('College Finder'),
@@ -86,7 +85,7 @@ shinyUI(fluidPage(
       sliderInput("size",label=h3("Undergraduate Population Size"),
                   min=0,max=100000,value=c(30000,50000)),
       radioButtons("type_tuition",label=h3("Type of Tuition"),
-                   choices=list("Both" = 1, "In-State"=2, "Out-of-State"=3),
+                   choices=list("No Filter" = 1, "In-State"=2, "Out-of-State"=3),
                    selected=1),
       sliderInput("in_tuition",label=h3("Tuition In-State"),
                   min=0,max=40000,value=c(5000,20000)),

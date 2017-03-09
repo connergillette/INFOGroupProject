@@ -33,6 +33,10 @@ shinyServer(function(input, output) {
     full.data.set$TUITIONFEE_OUT <- as.numeric(full.data.set$TUITIONFEE_OUT)
     full.data.set$ADM_RATE <- as.numeric(full.data.set$ADM_RATE)
     full.data.set$UGDS <- as.numeric(full.data.set$UGDS)
+    full.data.set$SATMTMID <- as.numeric(full.data.set$SATMTMID)
+    full.data.set$SATVRMID <- as.numeric(full.data.set$SATVRMID)
+    full.data.set$SATWRMID <- as.numeric(full.data.set$SATWRMID)
+    
     # Filters for States, if it is the united states it doesn't filter anything.
     if(input$state != "United States"){
       if(input$state %in% state.name){
@@ -46,10 +50,12 @@ shinyServer(function(input, output) {
     max.range.adm <- input$admission[2]/100
     full.data.set <- filter(full.data.set, ADM_RATE >= min.range.adm & ADM_RATE <= max.range.adm)
     # Filter for Majors
+    print(input$major)
     full.data.set <- select_(full.data.set, "INSTNM", "CITY", "STABBR","ZIP","LATITUDE", 
                             "LONGITUDE","INSTURL","ADM_RATE", "SATVRMID", "SATMTMID","SATWRMID",
                             input$major, "UGDS", "TUITIONFEE_IN", "TUITIONFEE_OUT") %>% 
-                     filter_(input$major != "0")
+                     filter_(.dots=paste0(input$major,"!= ","0"))
+
     # Filter for SAT Math Score
     min.sat.math.size <- input$sat.math[1]
     max.sat.math.size <- input$sat.math[2]
