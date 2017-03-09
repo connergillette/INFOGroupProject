@@ -10,8 +10,10 @@ library(sp)
 library(leaflet)
 library(htmltools)
 
+# URL for the interactive map
 url <- 'https://api.mapbox.com/styles/v1/connergillette/cizyy5a9m004m2smjhu438php/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY29ubmVyZ2lsbGV0dGUiLCJhIjoiY2l6cWIwOWJuMDE3azMzcDdvdmx3eWMwMyJ9.Qa235PPv1uPZtvaWIUSpQA'
 
+# Reads and stores the csv file.
 df <- read.csv('filtered_college_data.csv', stringsAsFactors=FALSE)
 commonwealth.territories <- list("American Samoa" = "AS",
                                  "District of Columbia" = "DC",
@@ -23,6 +25,7 @@ commonwealth.territories <- list("American Samoa" = "AS",
                                  "Puerto Rico" = "PR",
                                  "Virgin Islands" = "VI")
 
+# Creates the server for shiny app.
 shinyServer(function(input, output) {
   
   filtered.data <- reactive({
@@ -49,6 +52,7 @@ shinyServer(function(input, output) {
     min.range.adm <- input$admission[1]/100
     max.range.adm <- input$admission[2]/100
     full.data.set <- filter(full.data.set, ADM_RATE >= min.range.adm & ADM_RATE <= max.range.adm)
+    
     # Filter for Majors
     if(input$major != "None"){
       full.data.set <- select_(full.data.set, "INSTNM", "CITY", "STABBR","ZIP","LATITUDE", 
@@ -96,6 +100,7 @@ shinyServer(function(input, output) {
     return(as.data.frame(full.data.set))
   })
   
+  # Function to create map. 
   output$map <- renderLeaflet({
     df <- filtered.data()
     df$LATITUDE <- as.numeric(df$LATITUDE)
@@ -111,11 +116,14 @@ shinyServer(function(input, output) {
       setView(lng = -104.82, lat = 47.55, zoom = 3)
   })
   
+  # Retrns list containing names of all the institutions.
   list <- reactive({
     my.list <- filter(df, INSTNM %in% input$colleges)
     return(my.list)
   })
   
+  # Returns the table containing expenditure, sat scores, state name, total no. of UGs, city 
+  # Tution fees and url of the selected college.
   output$table <- renderDataTable({
     data <- list()
     data <- select(data, INSTNM, STABBR, CITY, ZIP, ADM_RATE, SATVRMID, SATMTMID, SATWRMID, 
@@ -127,6 +135,7 @@ shinyServer(function(input, output) {
     return(data)
   })
   
+  # returns a table containing selected columns from the original data set.
   output$full_df <- renderDataTable({
     data <- filtered.data()
     data <- select(data, INSTNM, STABBR, CITY, ZIP, ADM_RATE, SATVRMID, SATMTMID, SATWRMID, 
@@ -138,6 +147,7 @@ shinyServer(function(input, output) {
     return(data)
   })
   
+  # Creates an intercative enviroment for the user for to interact with the data.
   observe({
     click <- input$map_marker_click
     if(!is.null(click$lat) & !is.null(click$lng) ){
