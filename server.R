@@ -46,11 +46,12 @@ shinyServer(function(input, output) {
     max.range.adm <- input$admission[2]/100
     full.data.set <- filter(full.data.set, ADM_RATE >= min.range.adm & ADM_RATE <= max.range.adm)
     # Filter for Majors
-    print(input$major)
-    full.data.set <- select_(full.data.set, "INSTNM", "CITY", "STABBR","ZIP","LATITUDE", 
-                            "LONGITUDE","INSTURL","ADM_RATE", "SATVRMID", "SATMTMID","SATWRMID",
-                            input$major, "UGDS", "TUITIONFEE_IN", "TUITIONFEE_OUT") %>% 
-                     filter_(.dots=paste0(input$major,"!= ","0"))
+    if(input$major != "None"){
+      full.data.set <- select_(full.data.set, "INSTNM", "CITY", "STABBR","ZIP","LATITUDE", 
+                              "LONGITUDE","INSTURL","ADM_RATE", "SATVRMID", "SATMTMID","SATWRMID",
+                              input$major, "UGDS", "TUITIONFEE_IN", "TUITIONFEE_OUT") %>% 
+                       filter_(.dots=paste0(input$major,"!= ","0"))
+    }
 
     # Filter for SAT Math Score
     min.sat.math.size <- input$sat.math[1]
