@@ -1,5 +1,9 @@
 
 # Information about College Finding Application
+
+# Link to the application
+https://pvthejas.shinyapps.io/INFOGroupProject/
+
 # Thesis
 Education is a cornerstone to the modern society. One of the steps involved in the process of education is college. Nowadays, a degree in a college is almost a necessity for many jobs. To succeed in future career, students need to pick the right college that matches their preferences to spend about 4 years of their life in. Hence, it is important to look at the nationally accumulated data on Colleges to ultimately help students pick their preferred colleges.
 
