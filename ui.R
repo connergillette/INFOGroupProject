@@ -105,7 +105,7 @@ shinyUI(fluidPage(
                            fluidRow(h2('Summary statistics'), 
                                     verbatimTextOutput("summary"))
                   ),
-                  tabPanel('all', h2('List of All Colleges'))
+                  tabPanel('Data Table', h2('Data Table for Currently Filtered Data'), tableOutput('full_df'))
       )
     )
   )

@@ -102,6 +102,10 @@ shinyServer(function(input, output) {
   })
   
   output$list <- renderPrint({})
+  
+  output$full_df <- renderTable({
+    return(filtered.data())
+  })
 })
 
 
